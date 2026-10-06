@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Release",
+      "type": "process",
+      "command": "C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "args": [
+        "vrc-fish.sln",
+        "/p:Configuration=Release",
+        "/p:Platform=x64",
+        "/m"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

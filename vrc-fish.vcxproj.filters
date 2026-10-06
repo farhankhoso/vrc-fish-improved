@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="config\app_config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\controller.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\detectors.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\fish_engine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\matcher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\ml_model.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\template_store.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="infra\fs\path_utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="infra\log\logger.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="infra\win\capture_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="infra\win\input_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="infra\win\window_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\runtime_context.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vrc-fish.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config\app_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\controller.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\detectors.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\fish_engine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\matcher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\ml_model.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\template_store.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ini.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gs-opencv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gs-mfc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gs-public.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Ciclequeue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="infra\fs\path_utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="infra\log\logger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="infra\win\capture_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="infra\win\input_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="infra\win\window_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\runtime_context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resource\template.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Resource\tpl.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="vrc-fish.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.ini">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="vrc-fish.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
