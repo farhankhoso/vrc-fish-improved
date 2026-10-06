@@ -19,6 +19,8 @@
 > 说明：本项目最初是我为一位**运动功能障碍**的朋友编写的辅助工具，公开出来主要用于**学习交流/研究**（授权以 `LICENSE` 为准）。  
 > 钓鱼是一件放松的事情，希望大家**以休闲为主**，并遵守 VRChat 及相关服务的规则/条款。
 
+> **This is a fork of [abligail/vrc-fish](https://github.com/abligail/vrc-fish)**, licensed GPL-3.0. Changes in this fork: fog/weather-related detection recovery, a false-lock fix for VRChat's HUD being mismatched as the track bar, a stuck-slider watchdog, additional fish-icon templates, and MPC smoothing tuning.
+
 <details>
   <summary><b>目录</b></summary>
 
