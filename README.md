@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="banner.jpg" alt="VRChat FISHǃ 自动钓鱼 横幅" width="100%" />
+  <img src="banner.jpg" alt="VRChat FISHǃ Auto Fishing Assistant Banner" width="100%" />
 </div>
 
 <div align="center">
-  <h1>VRChat FISHǃ 自动钓鱼（辅助向）</h1>
-  <p>Windows · C++ · OpenCV 4.6.0 · 模板匹配 · 物理模型 + MPC（可选 ML）</p>
+  <h1>VRChat FISHǃ Auto Fishing Assistant (Assistive)</h1>
+  <p>Windows · C++ · OpenCV 4.6.0 · Template Matching · Physics + MPC (Optional ML)</p>
   <p>
-    <a href="README.en.md">English</a> · <b>中文</b>
+    <b>English</b> · <a href="README.md">中文</a>
   </p>
   <p>
     <img alt="Platform" src="https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square" />
@@ -16,97 +16,95 @@
   </p>
 </div>
 
-> 说明：本项目最初是我为一位**运动功能障碍**的朋友编写的辅助工具，公开出来主要用于**学习交流/研究**（授权以 `LICENSE` 为准）。  
-> 钓鱼是一件放松的事情，希望大家**以休闲为主**，并遵守 VRChat 及相关服务的规则/条款。
-
-> **This is a fork of [abligail/vrc-fish](https://github.com/abligail/vrc-fish)**, licensed GPL-3.0. Changes in this fork: fog/weather-related detection recovery, a false-lock fix for VRChat's HUD being mismatched as the track bar, a stuck-slider watchdog, additional fish-icon templates, and MPC smoothing tuning.
+> Note: This project was originally built as an **assistive tool** for a friend with **motor impairments**, and is shared mainly for **learning/research** (see `LICENSE` for licensing terms).  
+> Fishing should be relaxing—please keep it casual and follow VRChat and related service rules/terms.
 
 <details>
-  <summary><b>目录</b></summary>
+  <summary><b>Table of Contents</b></summary>
 
-- [致谢](#致谢)
-- [项目简介](#项目简介)
-- [演示视频](#演示视频)
-- [功能特性](#功能特性)
-- [适用世界](#适用世界)
-- [下载](#下载)
-- [快速开始](#快速开始)
-- [自行调节与适配](#自行调节与适配)
-- [构建](#构建)
-- [配置说明](#配置说明)
-- [日志与调试](#日志与调试)
-- [实验脚本（可选）](#实验脚本可选)
-- [目录结构](#目录结构)
-- [支持与参与](#支持与参与)
-- [免责声明](#免责声明)
+- [Acknowledgements](#acknowledgements)
+- [Overview](#overview)
+- [Demo Video](#demo-video)
+- [Features](#features)
+- [Target World](#target-world)
+- [Download](#download)
+- [Quick Start](#quick-start)
+- [Tuning \& Adaptation](#tuning--adaptation)
+- [Build](#build)
+- [Configuration](#configuration)
+- [Logging \& Debugging](#logging--debugging)
+- [Experimental Scripts (Optional)](#experimental-scripts-optional)
+- [Project Layout](#project-layout)
+- [Support \& Contributing](#support--contributing)
+- [Disclaimer](#disclaimer)
 - [License](#license)
 
 </details>
 
 ---
 
-## 致谢
+## Acknowledgements
 
-- 感谢我的好友 **aflotia**（VRChat 玩家）调试更加优秀的参数以及贡献素材图片
+- Thanks to my good friend **aflotia** (VRChat player) for tuning better parameters and contributing template images
 
 ---
 
-## 项目简介
+## Overview
 
-一个运行在 Windows 上的小工具：通过 OpenCV 对 VRChat 钓鱼界面的关键元素做模板匹配/颜色检测，并用“鼠标左键按住/松开”的方式辅助完成钓鱼小游戏的操作。
+A small Windows tool that assists the VRChat fishing minigame by detecting key UI elements (OpenCV template matching / simple brightness-based detection) and controlling the minigame via <kbd>Left Mouse Button</kbd> press/release.
 
-本仓库当前主要关注 **VRChat 世界 FISHǃ** 的钓鱼逻辑与相关参数/实验脚本。
+This repository currently focuses on the fishing logic, parameters, and experimental scripts for the **VRChat world FISHǃ**.
 
-## 演示视频
+## Demo Video
 
-4倍速：
+3× speed:
 
 <video src="https://github.com/user-attachments/assets/06b362be-6b1d-4f4d-ab5d-a4811a0f8a64" controls></video>
 
-## 功能特性
+## Features
 
-- 自动循环：抛竿 → 等咬钩 → 点击咬钩 → 控制小游戏 → 结算/清理 → 下一轮
-- 识别方式：
-  - `matchTemplate`：咬钩感叹号、小游戏轨道、鱼图标、滑块模板（必要时）
-  - 颜色检测：在轨道竖条上按亮度阈值提取玩家滑块上下边界（优先）
-- 控制方式：根据滑块物理模型做 MPC（Model Predictive Control）决策，驱动 <kbd>鼠标左键</kbd> 按住/松开
-- 记录与扩展：支持 `ml_mode`（录制数据 / 推理）以及日志分析、物理参数拟合脚本
+- Fully automated loop: cast → wait for bite → hook → control minigame → cleanup → next round
+- Detection:
+  - `matchTemplate`: bite prompt, minigame track, fish icon(s), slider template (fallback)
+  - Brightness-based slider boundary detection on the track column (primary)
+- Control: a lightweight physics model + MPC (Model Predictive Control) to decide hold/release
+- Optional ML workflow: record data / inference mode + analysis & fitting scripts
 
-## 适用世界
+## Target World
 
-本项目主要适配 VRChat 世界 **FISHǃ**：
+This project is mainly tuned for **FISHǃ**:
 - World URL: https://vrchat.com/home/world/wrld_ae001ea3-ed05-42f0-adf2-3d47efd10a77
 - World ID: `wrld_ae001ea3-ed05-42f0-adf2-3d47efd10a77`
 
-模板截图、阈值与 ROI 等参数均基于该世界的钓鱼 UI。若世界更新导致 UI 变化，需要重新截取 `Resource-VRChat/` 下的模板并调整 `config.ini`。
+Templates, thresholds, and ROIs are calibrated for the current UI of this world. If the world/UI updates, re-capture templates under `Resource-VRChat/` and adjust `config.ini`.
 
-## 下载
+## Download
 
-前往 [Releases](https://github.com/abligail/vrc-fish/releases) 页面下载最新版本的预编译可执行文件。
+Head to the [Releases](https://github.com/abligail/vrc-fish/releases) page to download the latest pre-built executable.
 
-## 快速开始
+## Quick Start
 
-1. 在 VRChat 的显示/图形设置中将分辨率设置为 `1280×960`（与本仓库模板默认分辨率一致）。
-2. 进入 VRChat 世界 **FISHǃ**，确保你已经在钓鱼点位，并让钓鱼 UI 保持可见（不要被其他窗口遮挡）。
-3. 抛竿后，找一个合适的站位/视角，确保”上钩提醒”（感叹号下半部分的圆点）和小游戏的”滑块轨道”完整出现在屏幕内（不出屏/不遮挡）。
-4. 按需调整 `config.ini`（尤其是窗口定位、分辨率、阈值与清理流程参数），然后运行 `vrc-fish.exe`。若 `is_pause=1`，可用 <kbd>Tab</kbd> 暂停/继续。
+1. In VRChat display/graphics settings, set the resolution to `1280×960` (matches the default templates in this repo).
+2. Enter **FISHǃ** in VRChat, make sure you are ready to fish and the fishing UI is visible (do not cover it with other windows).
+3. After casting, choose a position/view so that the bite indicator (the dot at the bottom of the exclamation mark) and the full minigame slider track are visible on screen (not cropped/occluded).
+4. Adjust `config.ini` if needed (window matching, resolution, thresholds, cleanup parameters), then run `vrc-fish.exe`. If `is_pause=1`, press <kbd>Tab</kbd> to pause/resume.
 
-提示：
-- 工程默认启用 `RequireAdministrator`，运行时可能需要管理员权限。
-- 程序会尝试将 VRChat 客户区强制调整到 `target_width` × `target_height`（由 `force_resolution` 控制），以稳定模板匹配效果。
-- 程序会从当前工作目录读取 `config.ini`，并从 `resource_dir`（默认 `Resource-VRChat/`）加载模板；建议在仓库根目录运行，或将 `config.ini` / `Resource-VRChat/` 拷贝到可执行文件同目录。
+Notes:
+- The project enables `RequireAdministrator` by default, so the app may require admin privileges.
+- For stable template matching, the app can force VRChat client-area resolution via `force_resolution`.
+- The app reads `config.ini` from the current working directory and loads templates from `resource_dir` (default `Resource-VRChat/`). Run it from the repo root, or copy `config.ini` and `Resource-VRChat/` next to the executable.
 
-## 自行调节与适配
+## Tuning & Adaptation
 
-仓库中的模板截图和默认参数基于我自己的钓鱼位点（地图初始岛屿**椰子湾的木栈桥尽头**，模型高度 **1.1 米**）。现有参数已经能够稳定钓起绝大部分鱼了，欢迎继续优化！
+The bundled templates and default parameters are based on my own fishing spot (the **end of the wooden pier at Coconut Bay**, the starting island, with an avatar height of **1.1 m**). The current parameters can already reliably catch the vast majority of fish. Further optimizations are welcome!
 
-> **建议**：首次使用时，推荐先到上述位点（椰子湾木栈桥尽头，模型高度约 1.1 米）验证程序能正常运行，确认无误后再尝试其他位点。
+> **Tip**: It is recommended to first go to the same spot described above (end of the wooden pier at Coconut Bay, avatar height ~1.1 m) to verify that the program works correctly in your environment before trying other locations.
 
-如果在你的环境下识别效果不佳，建议按以下优先级调整：
+If detection is not working well in your setup, adjust in the following priority:
 
-### 1. 调整轨道模板缩放范围（最常用）
+### 1. Adjust Track Template Scale Range (Most Common)
 
-不同站位、模型高度、鱼竿和分辨率/UI 缩放会导致滑块轨道在屏幕上的大小不同。程序通过多尺度模板匹配来适配，相关参数为：
+Different positions, avatar heights, fishing rods, and resolution/UI scaling will cause the slider track to appear at different sizes on screen. The program uses multi-scale template matching to handle this. The relevant parameters are:
 
 ```ini
 track_scale_min=0.8
@@ -114,7 +112,7 @@ track_scale_max=2
 track_scale_step=0.2
 ```
 
-**调整方法**：开启 `debug=1` 运行程序，观察控制台日志中轨道匹配成功时输出的 `scale` 值（例如 `scale=1.4`）。确认你的环境下 scale 大致落在什么范围后，就可以围绕该值缩小搜索范围、减小步长来提高匹配精度。例如观察到 scale 在 `1.2~1.6` 之间，可以设置：
+**How to adjust**: Run the program with `debug=1` and watch the console log for the `scale` value printed when the track is successfully matched (e.g. `scale=1.4`). Once you know the approximate scale range for your setup, narrow the search range around that value and reduce the step size for better precision. For example, if you observe scale values around `1.2~1.6`, set:
 
 ```ini
 track_scale_min=1.0
@@ -122,97 +120,91 @@ track_scale_max=1.8
 track_scale_step=0.1
 ```
 
-- 如果匹配到的 scale 值接近 `track_scale_min` 或 `track_scale_max` 的边界，说明搜索范围可能不够，需要扩大对应方向的范围。
-- `track_scale_step` 越小匹配越精确，但也会增加计算量。一般 `0.1~0.2` 即可满足需求。
+- If the matched scale is close to `track_scale_min` or `track_scale_max`, the search range may be too narrow—expand it in the corresponding direction.
+- A smaller `track_scale_step` gives more accurate matching but increases computation. Usually `0.1~0.2` is sufficient.
 
-### 2. 保持滑块轨道尽量垂直
+### 2. Keep the Slider Track as Vertical as Possible
 
-程序默认假设滑块轨道在屏幕上接近垂直。如果你的站位/视角导致轨道有明显倾斜，有两种方法：
+The program assumes the slider track is roughly vertical on screen. If your position/view angle causes noticeable tilt, there are two approaches:
 
-- **推荐**：调整游戏内站位或视角，让钓鱼轨道在屏幕上尽量垂直。
-- **通过配置补偿**：启用角度搜索参数，让程序自动检测小角度偏转：
+- **Recommended**: Adjust your in-game position or camera angle so the fishing track appears as vertical as possible on screen.
+- **Compensate via config**: Enable angle search parameters to let the program detect small rotations automatically:
   ```ini
   track_angle_min=-5.0
   track_angle_max=5.0
   track_angle_step=1.0
   ```
-  同样可以通过日志中输出的 `angle` 值来确认偏转程度，再缩小范围、减小步长以提高精度。注意角度搜索会成倍增加计算量，建议仅在确实需要时开启。
+  You can check the `angle` value in the log output to confirm the actual tilt, then narrow the range and reduce the step size for better accuracy. Note that angle search multiplies computation cost, so only enable it when needed.
 
-### 3. 其他调整
+### 3. Other Adjustments
 
-- **日志中出现大量 miss**：如果调整缩放/角度后仍然频繁 miss，最有效的方法是在你自己的位点手动截图/抠图，替换 `Resource-VRChat/` 文件夹中的模板图片，或微调 `config.ini` 中的匹配阈值（`bite_threshold`、`fish_icon_threshold` 等）。
-- **不同电脑/显示环境**：识别效果与屏幕分辨率、渲染设置关系较大，具体的匹配阈值和控制参数可能需要根据自己的环境做调整。
+- **Lots of "miss" in the logs**: If tuning scale/angle doesn't help enough, the most effective fix is to take your own screenshots at your fishing spot, crop the UI elements, and replace the images in `Resource-VRChat/`. You can also tweak matching thresholds (`bite_threshold`, `fish_icon_threshold`, etc.) in `config.ini`.
+- **Different PC / display environments**: Detection accuracy is sensitive to screen resolution and rendering settings. You may need to adjust thresholds and control parameters for your specific setup.
 
-## 构建
+## Build
 
-1. 用 Visual Studio 打开 `vrc-fish.sln`
-2. 选择 `x64` + `Release`（或 `Debug`）
-3. 编译生成 `vrc-fish.exe`
+1. Open `vrc-fish.sln` with Visual Studio
+2. Select `x64` + `Release` (or `Debug`)
+3. Build `vrc-fish.exe`
 
-依赖说明：
-- OpenCV 4.6.0：工程按 `include/` + `lib/` 组织，并在可执行文件同目录放置 `opencv_*460.dll`（仓库根目录已包含对应 DLL）。
-- VS Code 用户可以参考 `.vscode/tasks.json` 中的 `Build Release` 任务（路径可能需要按你的 VS 安装位置调整）。
-- 运行时请确保可执行文件能找到 `config.ini` 与 `Resource-VRChat/`（可通过设置工作目录为仓库根目录，或拷贝运行所需文件到输出目录）。
+Dependencies:
+- OpenCV 4.6.0: headers/libs are organized under `include/` + `lib/`, and the runtime `opencv_*460.dll` should be placed next to the executable (the repo root already includes these DLLs).
+- For VS Code, see `.vscode/tasks.json` (`Build Release`) and adjust paths for your local VS installation.
+- Make sure the runtime can locate `config.ini` and `Resource-VRChat/` (set the working directory to the repo root, or copy required files to your output folder).
 
-## 配置说明
+## Configuration
 
-配置文件：`config.ini`
+Config file: `config.ini` (the file contains inline comments, mainly in Chinese).
 
-| 分组 | Key | 说明 |
-|---|---|---|
-| `common` | `is_pause` | 是否启用 <kbd>Tab</kbd> 暂停/继续（1=开启） |
-| `vrchat_fish` | `window_class` / `window_title_contains` | 定位 VRChat 窗口（默认 `UnityWndClass` + 标题含 `VRChat`） |
-| `vrchat_fish` | `force_resolution` / `target_width` / `target_height` | 是否强制调整 VRChat 客户区分辨率 |
-| `vrchat_fish` | `capture_interval_ms` / `control_interval_ms` | 截图轮询与控制循环间隔 |
-| `vrchat_fish` | `cast_mouse_move_dx` / `cast_mouse_move_dy` | 抛竿后鼠标相对位移（例如轻微右移）；一轮结束会反向移回 |
-| `vrchat_fish` | `bite_threshold` / `minigame_threshold` / `fish_icon_threshold` / `slider_threshold` | 关键模板匹配阈值（0~1） |
-| `vrchat_fish` | `track_scale_*` / `track_scale_min`/`track_scale_max`/`track_scale_step` / `track_angle_min`/`track_angle_max`/`track_angle_step` | 轨道模板的缩放/旋转搜索参数（用于锁定轨道 ROI），支持按范围自动扫尺度+小角度旋转匹配 |
-| `vrchat_fish` | `cleanup_*` / `cleanup_reel_key` | 结算/清理到下一轮：等待、点击次数、收杆按键等 |
-| `vrchat_fish` | `ml_mode` / `ml_record_csv` / `ml_weights_file` | 0=自动控制，1=录制数据，2=ML 推理 |
-| `vrchat_fish` | `debug` / `debug_pic` / `debug_dir` / `vr_log_file` | 调试输出、截图保存与 CSV 日志 |
+Key highlights:
+- Window matching: `window_class`, `window_title_contains`
+- Resolution: `force_resolution`, `target_width`, `target_height`
+- After cast: `cast_mouse_move_dx`, `cast_mouse_move_dy` (moves the mouse slightly; restored at end of the round)
+- Thresholds: `bite_threshold`, `minigame_threshold`, `fish_icon_threshold`, `slider_threshold`
+- Template matching: track lock uses `track_scale_*` / `track_scale_min`/`track_scale_max`/`track_scale_step` / `track_angle_*` (range-based scale+angle scan supported)
+- Cleanup loop: `cleanup_*`, `cleanup_reel_key`
+- ML: `ml_mode` (0=auto, 1=record, 2=infer), `ml_record_csv`, `ml_weights_file`
+- Debug/log: `debug`, `debug_pic`, `debug_dir`, `vr_log_file`
 
-资源模板：
-- 默认目录：`Resource-VRChat/`
-- 可通过 `tpl_*` 配置项改名或替换模板文件（咬钩感叹号、轨道、鱼图标、玩家滑块等）
-- 鱼图标支持自动加载 `fish_icon_alt*.png`（例如 `fish_icon_alt3.png`），无需在配置中逐个添加
+Templates:
+- Default directory: `Resource-VRChat/` (override via `tpl_*` keys)
+- Fish icons: auto-loads `fish_icon_alt*.png` (e.g. `fish_icon_alt3.png`) without requiring config entries
 
-## 日志与调试
+## Logging & Debugging
 
-- `debug=1`：在控制台输出识别分数、状态切换与控制信息
-- `debug_pic=1`：在 `debug_dir` 下保存关键帧截图（用于排查模板失配/ROI 错位等问题）
-- `vr_log_file`：追加写入 CSV/文本日志（仓库内自带 `data/logs/` 示例）
+- `debug=1`: prints scores, state transitions, and control info to the console
+- `debug_pic=1`: saves key-frame screenshots under `debug_dir`
+- `vr_log_file`: appends runtime logs to a file (see examples under `data/logs/`)
 
-## 实验脚本（可选）
+## Experimental Scripts (Optional)
 
-脚本目录：`scripts/`
+Scripts live in `scripts/`:
 
-- `fit_physics.py`：从调试日志拟合滑块物理参数（`bb_gravity` / `bb_thrust` / `bb_drag`）
-- `analyze_log.py` / `analyze_oscillation.py`：分析 MPC 冲顶/震荡、跳变等行为
-- `train_bc.py`：行为克隆训练（需要 `numpy`），输出 `data/ml_weights.txt` 供 `ml_mode=2` 推理使用
+- `fit_physics.py`: fit slider physics parameters from debug logs
+- `analyze_log.py` / `analyze_oscillation.py`: analyze overshoot/oscillation behavior
+- `train_bc.py`: behavior cloning training (requires `numpy`), outputs weights for `ml_mode=2`
 
-> 这些脚本主要用于研究/调参，不影响基础使用。
+## Project Layout
 
-## 目录结构
+- `vrc-fish.cpp`: main app (capture, detection, state machine, control, cleanup)
+- `config.ini`: configuration
+- `Resource-VRChat/`: UI templates for FISHǃ
+- `data/`: logs, sample data, ML weights
+- `scripts/`: analysis / fitting / training utilities
 
-- `vrc-fish.cpp`：主程序（窗口捕获、模板匹配/颜色检测、状态机、控制策略、清理流程等）
-- `config.ini`：配置
-- `Resource-VRChat/`：FISHǃ 世界钓鱼 UI 的模板图片
-- `data/`：日志与样例数据、ML 权重文件
-- `scripts/`：日志分析 / 参数拟合 / 行为克隆训练等
+## Support & Contributing
 
-## 支持与参与
+If you find this project helpful, a Star would be much appreciated!
 
-如果觉得这个项目对你有帮助，欢迎给一个 Star 支持一下！
+I have limited time to maintain this regularly, so contributions from anyone interested are very welcome :)
 
-个人精力有限，可能没办法及时维护更新，非常欢迎感兴趣的朋友一起继续构建和完善代码 :)
+## Disclaimer
 
-## 免责声明
-
-- 本项目非 VRChat 官方作品，与 VRChat 没有任何关联。
-- 请遵守 VRChat 及相关服务的规则/条款；使用本项目带来的一切后果由使用者自行承担。
-- 该代码按“学习与研究”目的公开，不提供任何保证；请勿用于破坏他人体验、违反服务条款或其他不当场景。
-- 上述“使用建议/免责声明”仅为提醒，不构成对 `LICENSE`（GPL-3.0）条款的额外限制。
+- This is NOT an official VRChat project and is not affiliated with VRChat.
+- Please follow VRChat and related service terms/rules. Use at your own risk.
+- This repository is shared for learning/research purposes with no warranty. Please do not use it to harm others’ experience, violate service terms, or for other improper purposes.
+- The above guidance is informational and is not an additional restriction on the GPL-3.0 license terms.
 
 ## License
 
-本项目源码采用 GPL-3.0，详见 `LICENSE`。仓库中包含的第三方组件/资源可能适用不同许可或权利声明，详见 `THIRD_PARTY_NOTICES.md`。
+The source code of this project is licensed under GPL-3.0. See `LICENSE`. Third-party components/assets in this repository may be under different licenses or rights notices; see `THIRD_PARTY_NOTICES.md`.
