@@ -3,8 +3,8 @@
 </div>
 
 <div align="center">
-  <h1>VRChat FISHǃ Auto Fishing Assistant (Assistive)</h1>
-  <p>Windows · C++ · OpenCV 4.6.0 · Template Matching · Physics + MPC (Optional ML)</p>
+  <h1>VRChat FISHǃ Auto Fishing Assistant — Improved Fork</h1>
+  <p>Windows · C++ · OpenCV 4.6.0 · Template &amp; Color Matching · Physics + MPC (Optional ML)</p>
   <p>
     <b>English</b> · <a href="README.md">中文</a>
   </p>
@@ -16,18 +16,18 @@
   </p>
 </div>
 
-> Note: This project was originally built as an **assistive tool** for a friend with **motor impairments**, and is shared mainly for **learning/research** (see `LICENSE` for licensing terms).  
-> Fishing should be relaxing—please keep it casual and follow VRChat and related service rules/terms.
+> This is a fork of [abligail/vrc-fish](https://github.com/abligail/vrc-fish), licensed GPL-3.0. The original project was built as an assistive tool for a friend with motor impairments; this fork builds on that foundation with a round of reliability and tuning fixes gathered from real-world testing (see [What's Improved in This Fork](#whats-improved-in-this-fork) below).
+>
+> Fishing should be relaxing — please keep it casual and follow VRChat's Terms of Service.
 
 <details>
   <summary><b>Table of Contents</b></summary>
 
+- [What's Improved in This Fork](#whats-improved-in-this-fork)
 - [Acknowledgements](#acknowledgements)
 - [Overview](#overview)
-- [Demo Video](#demo-video)
 - [Features](#features)
 - [Target World](#target-world)
-- [Download](#download)
 - [Quick Start](#quick-start)
 - [Tuning \& Adaptation](#tuning--adaptation)
 - [Build](#build)
@@ -43,31 +43,38 @@
 
 ---
 
+## What's Improved in This Fork
+
+Everything below was driven by real testing sessions, not speculative tuning — each item traces back to a reproducible failure pattern caught in the debug logs.
+
+- **Stale track recovery.** Previously, once the slider track was located at the start of a minigame, that lock was never re-verified for the rest of the round. If something disrupted the frame right at lock-on (fog rolling in, the lure-launch animation), the bot would keep polling a now-invalid region until the whole minigame timed out. A bounded re-lock now triggers automatically after a short run of misses, with its own capped miss budget so it can't silently delay a *normal* minigame ending either.
+- **Fixed a false lock onto VRChat's own HUD.** The initial track-search area covered the full screen height, including the bottom HUD band (level/coins icon, health bar). Under weaker lighting (night, heavy fog), that static icon could occasionally outscore the real track bar, causing the bot to lock onto something that never moves — which looked exactly like the bot being frozen. The search area now excludes that band, and a separate stuck-position watchdog catches anything that still slips through.
+- **Weather-adaptive slider brightness.** The slider's color detection used a single fixed brightness cutoff, which broke whenever ambient lighting shifted (fog, day/night cycles). It now derives a brightness threshold from the current frame when there's enough contrast to do so safely, and falls back to the fixed value on flat/empty regions so it doesn't invent false detections where there's nothing to detect.
+- **Smoother, more consistent slider control.** The velocity/acceleration smoothing fed into the MPC controller was barely filtering any detection noise, which showed up as the on-screen slider reacting too sharply and inconsistently. Smoothing is now tuned to damp that noise before it reaches the control decision.
+- **Expanded fish-icon recognition.** Added template support for additional fish-icon variants (including a gear-shaped icon) that weren't previously recognized, so more valid bites get caught instead of missed.
+- **Minor threshold tuning** to reduce occasional single-frame misses under foggy conditions.
+
 ## Acknowledgements
 
-- Thanks to my good friend **aflotia** (VRChat player) for tuning better parameters and contributing template images
+- Thanks to the original author of [abligail/vrc-fish](https://github.com/abligail/vrc-fish) for the base project this fork builds on.
+- Thanks to **aflotia** (VRChat player) for tuning better parameters and contributing template images to the original project.
 
 ---
 
 ## Overview
 
-A small Windows tool that assists the VRChat fishing minigame by detecting key UI elements (OpenCV template matching / simple brightness-based detection) and controlling the minigame via <kbd>Left Mouse Button</kbd> press/release.
+A small Windows tool that assists the VRChat fishing minigame by detecting key UI elements (OpenCV template matching and color-based detection) and controlling the minigame via <kbd>Left Mouse Button</kbd> press/release.
 
-This repository currently focuses on the fishing logic, parameters, and experimental scripts for the **VRChat world FISHǃ**.
-
-## Demo Video
-
-3× speed:
-
-<video src="https://github.com/user-attachments/assets/06b362be-6b1d-4f4d-ab5d-a4811a0f8a64" controls></video>
+This repository focuses on the fishing logic, detection reliability, control tuning, and experimental scripts for the **VRChat world FISHǃ**.
 
 ## Features
 
 - Fully automated loop: cast → wait for bite → hook → control minigame → cleanup → next round
 - Detection:
   - `matchTemplate`: bite prompt, minigame track, fish icon(s), slider template (fallback)
-  - Brightness-based slider boundary detection on the track column (primary)
-- Control: a lightweight physics model + MPC (Model Predictive Control) to decide hold/release
+  - Weather-adaptive brightness-based slider boundary detection on the track column (primary)
+  - Automatic re-lock on stale/lost tracking instead of running out the clock on a bad lock
+- Control: a lightweight physics model + MPC (Model Predictive Control) to decide hold/release, with smoothing tuned to resist detection noise
 - Optional ML workflow: record data / inference mode + analysis & fitting scripts
 
 ## Target World
@@ -77,10 +84,6 @@ This project is mainly tuned for **FISHǃ**:
 - World ID: `wrld_ae001ea3-ed05-42f0-adf2-3d47efd10a77`
 
 Templates, thresholds, and ROIs are calibrated for the current UI of this world. If the world/UI updates, re-capture templates under `Resource-VRChat/` and adjust `config.ini`.
-
-## Download
-
-Head to the [Releases](https://github.com/abligail/vrc-fish/releases) page to download the latest pre-built executable.
 
 ## Quick Start
 
@@ -96,9 +99,7 @@ Notes:
 
 ## Tuning & Adaptation
 
-The bundled templates and default parameters are based on my own fishing spot (the **end of the wooden pier at Coconut Bay**, the starting island, with an avatar height of **1.1 m**). The current parameters can already reliably catch the vast majority of fish. Further optimizations are welcome!
-
-> **Tip**: It is recommended to first go to the same spot described above (end of the wooden pier at Coconut Bay, avatar height ~1.1 m) to verify that the program works correctly in your environment before trying other locations.
+The bundled templates and default parameters are based on a specific fishing spot and avatar height. Current parameters reliably catch the vast majority of fish at that spot; further tuning for other locations is welcome via contributions.
 
 If detection is not working well in your setup, adjust in the following priority:
 
@@ -136,9 +137,11 @@ The program assumes the slider track is roughly vertical on screen. If your posi
   ```
   You can check the `angle` value in the log output to confirm the actual tilt, then narrow the range and reduce the step size for better accuracy. Note that angle search multiplies computation cost, so only enable it when needed.
 
-### 3. Other Adjustments
+### 3. Detection Accuracy & Control Smoothness
 
-- **Lots of "miss" in the logs**: If tuning scale/angle doesn't help enough, the most effective fix is to take your own screenshots at your fishing spot, crop the UI elements, and replace the images in `Resource-VRChat/`. You can also tweak matching thresholds (`bite_threshold`, `fish_icon_threshold`, etc.) in `config.ini`.
+- **Lots of "miss" in the logs**: If tuning scale/angle doesn't help enough, the most effective fix is to take your own screenshots at your fishing spot, crop the UI elements, and replace the images in `Resource-VRChat/`. Fish-icon variants can be added without any config change — see [Configuration](#configuration) below. You can also tweak matching thresholds (`bite_threshold`, `fish_icon_threshold`, etc.) in `config.ini`.
+- **Slider feels jittery or inconsistent**: lower `velocity_ema_alpha` and `fish_accel_alpha` (try `0.2`–`0.3`) to smooth out detection noise before it reaches the controller. If it's still too reactive after that, try raising `reactive_grow_threshold` or lowering `bb_drag` slightly — change one at a time so you can tell what helped.
+- **Bot seems to freeze mid-round**: check the debug log for `stuck-slider watchdog fired` or `consecutive miss threshold hit` — both indicate the bot recovered from a bad lock automatically. If it still doesn't recover, try lowering `track_relock_miss_frames` or `stuck_slider_watchdog_frames` in `config.ini`.
 - **Different PC / display environments**: Detection accuracy is sensitive to screen resolution and rendering settings. You may need to adjust thresholds and control parameters for your specific setup.
 
 ## Build
@@ -154,7 +157,7 @@ Dependencies:
 
 ## Configuration
 
-Config file: `config.ini` (the file contains inline comments, mainly in Chinese).
+Config file: `config.ini` (the file contains inline comments, in Chinese and English).
 
 Key highlights:
 - Window matching: `window_class`, `window_title_contains`
@@ -162,13 +165,15 @@ Key highlights:
 - After cast: `cast_mouse_move_dx`, `cast_mouse_move_dy` (moves the mouse slightly; restored at end of the round)
 - Thresholds: `bite_threshold`, `minigame_threshold`, `fish_icon_threshold`, `slider_threshold`
 - Template matching: track lock uses `track_scale_*` / `track_scale_min`/`track_scale_max`/`track_scale_step` / `track_angle_*` (range-based scale+angle scan supported)
+- Detection reliability (new in this fork): `track_relock_miss_frames`, `slider_bright_auto`, `search_bottom_margin_pct`, `stuck_slider_watchdog_frames`
+- Control smoothing (tuned in this fork): `velocity_ema_alpha`, `fish_accel_alpha`
 - Cleanup loop: `cleanup_*`, `cleanup_reel_key`
 - ML: `ml_mode` (0=auto, 1=record, 2=infer), `ml_record_csv`, `ml_weights_file`
 - Debug/log: `debug`, `debug_pic`, `debug_dir`, `vr_log_file`
 
 Templates:
 - Default directory: `Resource-VRChat/` (override via `tpl_*` keys)
-- Fish icons: auto-loads `fish_icon_alt*.png` (e.g. `fish_icon_alt3.png`) without requiring config entries
+- Fish icons: auto-loads `fish_icon_alt*.png` (e.g. `fish_icon_alt13.png`) without requiring config entries — just crop and resize to match the existing templates' dimensions and drop the file in
 
 ## Logging & Debugging
 
@@ -196,15 +201,15 @@ Scripts live in `scripts/`:
 
 If you find this project helpful, a Star would be much appreciated!
 
-I have limited time to maintain this regularly, so contributions from anyone interested are very welcome :)
+This is a fork maintained in spare time — issues and pull requests are welcome, especially reliability fixes backed by debug logs.
 
 ## Disclaimer
 
 - This is NOT an official VRChat project and is not affiliated with VRChat.
 - Please follow VRChat and related service terms/rules. Use at your own risk.
-- This repository is shared for learning/research purposes with no warranty. Please do not use it to harm others’ experience, violate service terms, or for other improper purposes.
+- This repository is shared for learning/research purposes with no warranty. Please do not use it to harm others' experience, violate service terms, or for other improper purposes.
 - The above guidance is informational and is not an additional restriction on the GPL-3.0 license terms.
 
 ## License
 
-The source code of this project is licensed under GPL-3.0. See `LICENSE`. Third-party components/assets in this repository may be under different licenses or rights notices; see `THIRD_PARTY_NOTICES.md`.
+The source code of this project is licensed under GPL-3.0, same as the original project it's forked from. See `LICENSE`. Third-party components/assets in this repository may be under different licenses or rights notices; see `THIRD_PARTY_NOTICES.md`.
